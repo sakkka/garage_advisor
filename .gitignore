@@ -1,0 +1,53 @@
+# Ignore configuration files that may contain sensitive information.
+sites/*/*settings*.php
+
+# Ignore paths that contain generated content.
+files/
+sites/*/files
+sites/*/private
+
+# Ignore default text files
+www/robots.txt
+www/CHANGELOG.txt
+www/COPYRIGHT.txt
+www/INSTALL*.txt
+www/LICENSE.txt
+www/MAINTAINERS.txt
+www/UPGRADE.txt
+www/README.txt
+www/sites/README.txt
+www/sites/all/modules/*
+# www/sites/all/libraries/*
+www/sites/default
+www/sites/example.sites.php
+www/sites/all/themes/README.txt
+www/sites/mmbp.fr/settings.php
+www/sites/lib/
+
+# Ignore everything but the "sites" folder ( for non core developer )
+www/.htaccess
+www/web.config
+www/authorize.php
+www/cron.php
+www/index.php
+www/install.php
+www/update.php
+www/xmlrpc.php
+www/includes
+www/misc
+www/modules
+www/profiles
+www/scripts
+www/themes
+www/.gitignore
+
+.idea
+*.DS_Store
+
+# Specific to this project
+db_snapshots
+www/translations
+sites/garageadvisor.com/settings.php
+sites/garageadvisor.com/files
+docs/specs
+www/sites/all/.sass-cache/
