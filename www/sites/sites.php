@@ -54,4 +54,4 @@
  * @see http://drupal.org/documentation/install/multi-site
  */
 
-$sites["local.garageadvisor.net"] = "garageadvisor.com";
+$sites["local.garageadvisor.com"] = "garageadvisor.com";
