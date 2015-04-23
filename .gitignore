@@ -5,6 +5,7 @@ sites/*/*settings*.php
 files/
 sites/*/files
 sites/*/private
+sites/*/settings.php
 
 # Ignore default text files
 www/robots.txt
@@ -15,14 +16,7 @@ www/LICENSE.txt
 www/MAINTAINERS.txt
 www/UPGRADE.txt
 www/README.txt
-www/sites/README.txt
-www/sites/all/modules/*
-# www/sites/all/libraries/*
-www/sites/default
-www/sites/example.sites.php
-www/sites/all/themes/README.txt
-www/sites/mmbp.fr/settings.php
-www/sites/lib/
+
 
 # Ignore everything but the "sites" folder ( for non core developer )
 www/.htaccess
@@ -47,7 +41,6 @@ www/.gitignore
 # Specific to this project
 db_snapshots
 www/translations
-sites/garageadvisor.com/settings.php
-sites/garageadvisor.com/files
 docs/specs
-www/sites/all/.sass-cache/
+www/sites/example.sites.php
+www/sites/README.txt

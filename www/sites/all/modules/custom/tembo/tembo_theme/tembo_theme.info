@@ -1,0 +1,7 @@
+name = Tembo Theme
+description = Allows Other module to Decorate/Enhance the native Php Templating Engine of Drupal
+package = Tembo
+core = 7.x
+version = "7.x-1.0"
+
+dependencies[] = tembo

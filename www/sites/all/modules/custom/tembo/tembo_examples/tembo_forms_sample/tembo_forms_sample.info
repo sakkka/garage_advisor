@@ -1,0 +1,9 @@
+name = Tembo Forms Example
+description = Forms Example
+package = Tembo Examples
+core = 7.x
+version = "7.x-1.0"
+
+dependencies[] = tembo
+dependencies[] = tembo_forms
+dependencies[] = tembo_twig

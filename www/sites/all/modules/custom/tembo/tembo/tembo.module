@@ -1,0 +1,99 @@
+<?php
+/**
+*
+* ---------------------------------------------------------------------------------------------------
+* ---------------------------------------------------------------------------------------------------
+*             __            __
+*            / /____ __ _  / /  ___
+*           / __/ -_)  ' \/ _ \/ _ \
+*           \__/\__/_/_/_/_.__/\___/
+*
+*                               _
+*                             .' `'.__
+*                           /      \ `'"-,
+*          .-''''--...__..-/ .     |      \
+*        .'               ; :'     '.  a   |
+*       /                 | :.       \     =\
+*      ;                   \':.      /  ,-.__;.-;`
+*     /|     .              '--._   /-.7`._..-;`
+*    ; |       '                |`-'      \  =|
+*    |/\        .   -' /     /  ;         |  =/
+*    (( ;.       ,_  .:|     | /     /\   | =|
+*     ) / `\     | `""`;     / |    | /   / =/
+*       | ::|    |      \    \ \    \ `--' =/
+*      /  '/\    /       )    |/     `-...-`
+*     /    | |  `\    /-'    /;
+*     \  ,,/ |    \   D    .'  \
+*     `""`   \  nnh  D_.-'L__nnh
+*              `"""`
+*
+*               __newbrain corp__
+* ---------------------------------------------------------------------------------------------------
+* ---------------------------------------------------------------------------------------------------
+**/
+
+use Tembo\Core\Exception\TemboException;
+use Tembo\Core\App;
+
+define('DS', '/');
+
+/**
+ * Initalization
+ */
+function tembo_init()
+{
+
+
+    if(class_exists("Tembo\Core\App")){
+        tembo_register_app();
+    }else{
+        watchdog("tembo", "tembo Application not found, please run composer-json-rebuild then composer-install...", array(), WATCHDOG_WARNING);
+    }
+}
+
+/**
+ * Registers The App
+ */
+function tembo_register_app()
+{
+    global $application;
+    $application = new App();
+
+    $sp = new \Tembo\Core\Providers\TemboCoreServiceProvider();
+    $sp->register($application);
+
+    module_invoke_all("app_registered", $application);
+}
+
+/**
+ * Shortcut for Retrieving The App
+ * @return App
+ */
+function tembo_app()
+{
+    global $application;
+    if(empty($application)) {
+
+        if(drupal_is_cli()){
+            watchdog("tembo", "Application is not registered yet!!", array(), WATCHDOG_WARNING);
+        }else{
+            throw new TemboException("Application is not registered yet!!");
+        }
+    }
+
+    return $application;
+}
+
+
+/**
+ * Shortcut for Retrieving The Main dispatcher
+ * @return \Symfony\Component\EventDispatcher\EventDispatcher
+ */
+function tembo_dispatcher(){
+    $application = tembo_app();
+    if($application->offsetExists("tembo.dispatcher")){
+        return $application["tembo.dispatcher"];
+    }else{
+        throw new TemboException("Tembo Dispatcher is not available");
+    }
+}

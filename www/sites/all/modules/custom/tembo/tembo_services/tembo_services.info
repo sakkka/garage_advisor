@@ -1,0 +1,9 @@
+name = Tembo services
+description = Tembo services tools
+package = Tembo
+core = 7.x
+version = "7.x-1.0"
+
+project = "tembo_services"
+
+dependencies[] = tembo

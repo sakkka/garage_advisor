@@ -1,0 +1,23 @@
+{
+    "name": "tembo/twig",
+    "description": "",
+    "authors": [
+        {
+            "name": "Tembo",
+            "email": "theophile@art-ev.com"
+        }
+    ],
+    "type": "drupal-module",
+
+    "require": {
+        "twig/twig": "1.*"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "Tembo\\Twig": "src/"
+        }
+    },
+
+    "minimum-stability": "dev"
+}

@@ -1,0 +1,33 @@
+<?php
+
+
+/**
+ *
+ * Improves drupal_render default behavior
+ *
+ * @param $hook
+ * @param array $variables
+ * @return string
+ */
+function tembo_render($hook, $variables = array()){
+
+    $hooks = theme_get_registry(FALSE);
+
+    if($hooks instanceof ThemeRegistry){
+        $infos = $hooks->offsetGet($hook);
+    }else{
+        $infos = $hooks[$hook];
+    }
+
+    $variables["#hook_infos"] = $infos;
+    $output = theme($hook, $variables);
+
+    if(variable_get("theme_debug", FALSE)){
+        $output = "<!-- TEMBO DEBUG : BEGIN $hook -->\r" . $output . "\r<!-- TEMBO DEBUG : END $hook -->";
+    }
+    $element = array("#markup" => $output);
+    return drupal_render($element);
+}
+
+
+

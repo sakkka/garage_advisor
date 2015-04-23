@@ -1,0 +1,12 @@
+{
+    "name": "tembo/services",
+    "version": "1.0.0",
+    "require" : {},
+    "autoload": {
+        "psr-0": {
+            "Tembo\\Services": "src/"
+        }
+    },
+
+    "minimum-stability": "dev"
+}

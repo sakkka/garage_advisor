@@ -1,0 +1,75 @@
+<?php
+
+use Mandango\Mondator\Mondator;
+use Tembo\Core\App;
+use Tembo\MongoDB\MongoInterfaceServices;
+//use Icodrive\MongoInterface\Model\Mapping\Metadata;
+use Mongator\Connection;
+/**
+ * Initalization
+ */
+function tembo_mongodb_init()
+{
+}
+
+function tembo_mongodb_app_registered( App $app )
+{
+    $configClasses = array(
+    );
+
+    $metadata_class = variable_get('tembo_mongo_db_metadata_factory_class');
+    $project_mongo_module = variable_get('project_mongo_module');
+
+    if(!isset($metadata_class))
+    {
+        watchdog("tembo_mongodb", "please run composer json rebuild", array(), WATCHDOG_ERROR);
+        return;
+    }
+    else if(!isset($project_mongo_module))
+    {
+        watchdog("tembo_mongodb", "please set project_mongo_module variable on settings", array(), WATCHDOG_ERROR);
+        return;
+    }else if(!class_exists($metadata_class))
+    {
+        watchdog("tembo_mongodb", "please set tembo_mongo_db_metadata_factory_class variable on settings", array(), WATCHDOG_ERROR);
+        return;
+    }
+
+    $metadataFactory = new $metadata_class();
+
+    drupal_alter('mongo_classes', $configClasses);
+
+    $app[MongoInterfaceServices::MONDATOR] = function () { return new Mondator(); };
+    $app[MongoInterfaceServices::MONGATOR] = function () use($metadataFactory) { return new \Mongator\Mongator($metadataFactory); };
+
+    /**
+     * @var $mongator \Mongator\Mongator
+     */
+    $mongator = $app[MongoInterfaceServices::MONGATOR];
+
+    $connection = new Connection(variable_get('tembo_mongo_db_host', 'mongodb://localhost:27017'), variable_get('tembo_mongo_db', 'tembo'));
+    $mongator->setConnection('tembo-mongo', $connection);
+    $mongator->setDefaultConnectionName('tembo-mongo');
+
+    /**
+     * @var $mondator Mondator
+     */
+    $mondator = $app[MongoInterfaceServices::MONDATOR];
+    $mondator->setConfigClasses($configClasses);
+    $project_mongo_module_path = drupal_get_path('module', $project_mongo_module);
+
+    $path = DRUPAL_ROOT . DS . $project_mongo_module_path . '/src/';
+
+    $mondator->setExtensions(array(
+        new Mongator\Extension\Core(array(
+            'metadata_factory_class' => $metadata_class,
+            'metadata_factory_output' => $path,
+            'default_output' => $path,
+        ))
+    ));
+
+    $mondator->process();
+}
+
+
+

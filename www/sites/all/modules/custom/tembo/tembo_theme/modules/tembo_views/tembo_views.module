@@ -1,0 +1,35 @@
+<?php
+
+
+function tembo_views_init(){
+
+}
+
+
+/**
+ * Allows us To Alter View and to Have Full Control of HTML Rendering
+ * @param $view
+ */
+function tembo_views_views_pre_render(&$view) {
+
+
+    $view_style_plugin_class = variable_get("tembo_view_style_plugin", "\Tembo\Views\ViewStylePlugin");
+
+    $hooks = theme_get_registry(FALSE);
+    $template = $view->name ."-" .$view->current_display;
+    $view->template = $template;
+
+    //ALTER Custom Template here
+    drupal_alter("views_custom_template", $view);
+    $template = $view->template;
+
+
+    if (!empty($template) && isset($hooks[$template])) {
+        $plugin  = new $view_style_plugin_class($template, $view);
+        $plugin->original_style_plugin=  $view->style_plugin;
+        $plugin->current_display = $view->current_display;
+        $view->style_plugin =$plugin;
+    }
+
+    return;
+}

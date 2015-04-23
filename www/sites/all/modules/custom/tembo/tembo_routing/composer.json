@@ -1,0 +1,17 @@
+{
+    "name": "tembo/routing",
+    "version": "1.0.0",
+    "require" : {
+        "symfony/http-foundation": "2.5.*",
+        "symfony/routing": "2.5.*",
+        "symfony/config": "2.5.*",
+        "symfony/yaml": "2.5.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Tembo\\Routing": "src/"
+        }
+    },
+
+    "minimum-stability": "dev"
+}

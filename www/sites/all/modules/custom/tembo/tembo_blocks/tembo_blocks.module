@@ -1,0 +1,93 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: kalutheo
+ * Date: 08/07/2014
+ * Time: 10:22
+ */
+
+
+
+/**
+ * Initialize block Classes
+ */
+function tembo_blocks_init(){
+
+    $app = tembo_app();
+    $registry = array();
+
+
+
+
+
+    // Map Class To Block
+    // Gather the blocks defined by modules.
+    foreach (module_implements('block_info') as $module) {
+
+        $module_blocks = module_invoke($module, 'block_info');
+
+
+
+
+        if(!empty($module_blocks)){
+            foreach($module_blocks as $key => $val){
+                $module = $val;
+
+                if(isset($module["#class"])){
+                    $registry[$key] =  $module["#class"];
+                }
+            }
+        }
+
+    }
+
+
+
+    /////Register Altered Blocks
+    $altered_blocks = array();
+    drupal_alter("blocks_class", $altered_blocks);
+    foreach($altered_blocks as $key => $val){
+        $module = $val;
+        if(isset($module["#class"])){
+            $registry[$key] =  $module["#class"];
+        }
+    }
+
+
+    $app["tembo.block_registry"] = $registry;
+    return;
+}
+
+
+
+/**
+ * Retrieve Block Class on Block View Alter
+ * @param $data
+ * @param $block
+ */
+function tembo_blocks_block_view_alter(&$data, $block) {
+    try{
+        $app = tembo_app();
+        $registry =  $app["tembo.block_registry"];
+        if(isset($registry[$block->delta])){
+            $ClassName = $registry[$block->delta];
+
+            // STORE Block in the Block Registry inside the Container
+
+
+
+            /**
+             * @var $blockInstance \Tembo\Blocks\BlockBase
+             */
+            $blockInstance = new $ClassName();
+            $blockInstance->setData($data);
+            $data = $blockInstance->toArray();
+        }
+    }catch (\Exception $e){
+
+    }
+}
+
+
+
+

@@ -1,0 +1,22 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: kalutheo
+ * Date: 08/07/2014
+ * Time: 10:22
+ */
+
+
+function tembo_block_sample_block_info() {
+    // This example comes from node.module.
+    $blocks['hello_world'] = array(
+        'info' => t('My Tembo Block'),
+        'cache' => DRUPAL_NO_CACHE,
+        '#class' => 'Tembo\Sample\Blocks\GreetingBlock'
+    );
+    return $blocks;
+}
+
+function tembo_block_sample_init(){
+    return;
+}

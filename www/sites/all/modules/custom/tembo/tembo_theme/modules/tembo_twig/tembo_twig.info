@@ -1,0 +1,7 @@
+name = Tembo Twig
+description = Adds TWIG Support to Drupal 7
+package = Tembo
+core = 7.x
+version = "7.x-1.0"
+
+dependencies[] = tembo_theme

@@ -1,0 +1,70 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: kalutheo
+ * Date: 08/07/2014
+ * Time: 10:22
+ */
+
+use Tembo\Theme\Theme;
+
+
+/**
+ * =============  THEME CUSTOM FORM
+ * @param $existing
+ * @param $type
+ * @param $theme
+ * @param $path
+ * @return array
+ */
+function tembo_forms_sample_theme($existing, $type, $theme, $path) {
+    $hooks = array();
+
+    //Register Form Theme
+    Theme::registerForm("form_example_form", "templates/twig/sample-form", $hooks);
+    return $hooks;
+}
+
+
+/**
+ * ============= DEFINE FORM MENU CALLBACK
+ * @return array
+ */
+function tembo_forms_sample_menu() {
+    $items = array();
+    $items['examples/form-example'] = array( //this creates a URL that will call this form at "examples/form-example"
+        'title' => 'Example Form', //page title
+        'description' => 'A form to mess around with.',
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('form_example_form'), //put the name of the form here
+        'access callback' => TRUE
+    );
+    return $items;
+}
+
+/**
+ *
+ * =============  REGISTER CUSTOM FORM CLASS
+ * @param
+ * $form_id
+ * @param $args
+ * @return mixed
+ */
+function tembo_forms_sample_forms() {
+    $forms['form_example_form'] = array(
+        '#class' => '\Tembo\Forms\Sample\SampleForm'
+    );
+    return $forms;
+}
+
+
+
+/**
+ * Form Callback
+ * @param $form
+ * @param $form_state
+ * @return mixed
+ */
+function form_example_form($form, &$form_state) {
+    return $form;
+}

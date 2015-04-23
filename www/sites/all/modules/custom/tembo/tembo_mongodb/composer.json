@@ -1,0 +1,16 @@
+{
+    "name": "tembo/mongodb",
+    "version": "1.0.0",
+    "require": {
+        "mongator/mongator": "1.4.*",
+        "symfony/yaml": "2.5.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "Tembo\\MongoDB": "src/",
+            "Mandango\\Behavior": "src/"
+        }
+    },
+
+    "minimum-stability": "dev"
+}

@@ -1,0 +1,30 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: kalutheo
+ * Date: 08/07/2014
+ * Time: 10:22
+ */
+
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Route;
+
+
+/**
+ * @param RouteCollection $routes
+ */
+function tembo_routing_sample_route_alter(RouteCollection &$routes){
+
+
+    //Add routes with PHP
+    $routes->add('hello', new Route('/examples/form-example', array(
+        '_controller' => '\Tembo\Sample\Routing\SampleController::indexAction'
+    )));
+
+
+    //Load Collection from YAML
+    $collection = tembo_router()->loadYAML(drupal_get_path("module", "tembo_routing_sample"), "sample-routing.yml");
+    $routes->addCollection($collection);
+
+
+}

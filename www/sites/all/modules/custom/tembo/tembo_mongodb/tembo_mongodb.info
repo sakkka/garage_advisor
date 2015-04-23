@@ -1,0 +1,9 @@
+name = Tembo MongoDB
+description = Module Tembo MongoDB
+package = Tembo
+core = 7.x
+version = "7.x-1.0"
+
+project = "tembo_mongodb"
+
+dependencies[] = tembo

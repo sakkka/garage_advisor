@@ -1,0 +1,17 @@
+{
+    "name": "tembo/tembo",
+    "version": "1.0.0",
+    "require" : {
+        "pimple/pimple": "v2.1.0",
+        "symfony/event-dispatcher": "v2.3.17",
+        "sugiphp/config": "dev-master",
+        "doctrine/annotations": "v1.1.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "Tembo": "src/"
+        }
+    },
+
+    "minimum-stability": "dev"
+}

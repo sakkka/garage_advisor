@@ -1,0 +1,7 @@
+name = Tembo Forms
+description = Object Oriented Forms For Drupal 7
+package = Tembo
+core = 7.x
+version = "7.x-1.0"
+
+dependencies[] = tembo

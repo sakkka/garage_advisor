@@ -1,0 +1,13 @@
+{
+    "name": "tembo/forms_sample",
+    "version": "1.0.0",
+    "require" : {
+    },
+    "autoload": {
+        "psr-0": {
+            "Tembo\\Forms\\Sample": "src/"
+        }
+    },
+
+    "minimum-stability": "dev"
+}

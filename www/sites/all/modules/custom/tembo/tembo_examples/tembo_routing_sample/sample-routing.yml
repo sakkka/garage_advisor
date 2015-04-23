@@ -1,0 +1,8 @@
+# ----------------  ROUTES ----------------------
+
+products:
+    pattern:  /content/products
+    defaults:  { _controller: Tembo\Sample\Routing\HomeController::indexAction }
+
+
+

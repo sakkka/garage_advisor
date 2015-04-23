@@ -1,0 +1,260 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: kalutheo
+ * Date: 08/07/2014
+ * Time: 10:22
+ */
+
+define("TEMBO_TWIG_THEME_CALLBACK", "tembo_twig_theme_callback");
+
+
+/**
+ * @param \Tembo\Core\App $application
+ */
+function tembo_twig_app_registered(\Tembo\Core\App $app) {
+
+
+    if(!class_exists('Twig_Loader_String')){
+        watchdog("tembo_twig", "TWIG library is not installed. Run Composer Update !", WATCHDOG_WARNING);
+        return;
+    }
+
+
+    $loader = new Twig_Loader_String();
+    $twig = new Twig_Environment($loader, array(
+        'autoescape' => false
+    ));
+
+
+    //------ Register Drupal TWIG Filters ----------------------------------------------------------------
+
+    /**
+     * ------------------------------------------------------------
+     *  Custom Dates
+     * ------------------------------------------------------------
+     */
+    $custom_func = function($timestamp, $format){
+        return format_date($timestamp, "custom", $format);
+    };
+    $filter = new Twig_SimpleFilter("format_date", $custom_func);
+    $twig->addFilter("format_date", $filter);
+
+
+
+    /**
+     * ------------------------------------------------------------
+     *  Render Drupal Element
+     * ------------------------------------------------------------
+     */
+    $custom_func = function($element){
+        return render($element);
+    };
+    $filter = new Twig_SimpleFilter("render", $custom_func);
+    $twig->addFilter("render", $filter);
+
+    /**
+     * ------------------------------------------------------------
+     *  File Create URL
+     * ------------------------------------------------------------
+     */
+    $custom_func = function($uri){
+        return file_create_url($uri);
+    };
+    $filter = new Twig_SimpleFilter("file_create_url", $custom_func);
+    $twig->addFilter("file_create_url", $filter);
+
+
+
+    /**
+     * ------------------------------------------------------------
+     *  Image Style URL
+     * ------------------------------------------------------------
+     */
+    $custom_func = function($uri, $stylename){
+        return image_style_url($stylename, $uri);
+    };
+    $filter = new Twig_SimpleFilter("image_style_url", $custom_func);
+    $twig->addFilter("image_style_url", $filter);
+
+
+
+
+    /**
+     * ------------------------------------------------------------
+     *  URL
+     * ------------------------------------------------------------
+     */
+    $custom_func = function($path, $options = array()){
+        $url =  url($path, $options);
+        return $url;
+    };
+    $filter = new Twig_SimpleFilter("url", $custom_func);
+    $twig->addFilter("url", $filter);
+
+
+
+    /**
+     * ------------------------------------------------------------
+     *  t ( translate Drupal )
+     * ------------------------------------------------------------
+     */
+    $custom_func = function($string, $args = array() ,  $options = array() ){
+        return t($string,  $args, $options);
+    };
+    $filter = new Twig_SimpleFilter("t", $custom_func);
+    $twig->addFilter("t", $filter);
+
+
+
+    /**
+     * ------------------------------------------------------------
+     * truncate
+     * ------------------------------------------------------------
+     */
+    $custom_func = function($str, $max_length){
+        $str =  truncate_utf8($str, $max_length, FALSE, TRUE);
+        return $str;
+    };
+    $filter = new Twig_SimpleFilter("truncate", $custom_func);
+    $twig->addFilter("truncate", $filter);
+
+
+
+    /**
+     * ------------------------------------------------------------
+     * Tembo render
+     * ------------------------------------------------------------
+     */
+    $custom_func = function($hook, $data){
+        return tembo_render($hook, $data);
+    };
+    $filter = new Twig_SimpleFilter("tembo_render", $custom_func);
+    $twig->addFilter("tembo_render", $filter);
+
+
+
+    //Register Twig Services
+    $app["tembo.twig"] = $twig;
+    $app["tembo.theme_function"] = TEMBO_TWIG_THEME_CALLBACK;
+
+
+    //Twig Alter
+    drupal_alter("twig", $twig);
+
+    return;
+
+}
+
+
+
+/**
+ * Main Callback responsible of TWIG Templates Rendering
+ * @param $var
+ * @return mixed
+ */
+function tembo_twig_theme_callback(&$var){
+
+
+    global $theme;
+    global $theme_path;
+
+
+    //Check Form
+    if(isset($var["form"]) AND isset($var["form"]["#build_id"])){
+        $form = $var["form"];
+        if(!empty($form["#theme"])){
+            $hooks = theme_get_registry(FALSE);
+            $hook   = $form["#theme"][0];
+            $infos = $hooks[$hook];
+            $var["#hook_infos"] = $infos;
+        }
+    }
+
+    if(isset($var["#hook_infos"])){
+
+
+        $hook_infos = $var["#hook_infos"];
+
+        //Check for view Composer Pre Render Class
+        if(isset( $hook_infos["#pre_render"] ) AND class_exists($hook_infos["#pre_render"] )){
+            $ComposerClass =  $var["#hook_infos"]["#pre_render"];
+            /**
+             * @var $composer \Tembo\Theme\IComposable
+             */
+            $composer = new $ComposerClass();
+            $composer->compose($var);
+        }
+
+        // Start output buffering
+        ob_start();
+
+
+        $path_to_theme = drupal_get_path("theme", $theme);
+        $theme_file_suggestion =  drupal_basename($hook_infos["path"]);
+
+
+        // Overrides Module Template
+        //if module, try to include template file prodivded in Theme
+        if($hook_infos["type"] == "module"){
+            $theme_files = &drupal_static(__FUNCTION__);
+            if (!isset($theme_files)) {
+                $theme_files = file_scan_directory($path_to_theme, "/.*\.twig$/", array("key" => "name"));
+            }
+
+
+
+            if(isset($theme_files[$theme_file_suggestion])){
+                $template_file = DRUPAL_ROOT . "/" .$theme_files[$theme_file_suggestion]->uri;
+            }
+        }
+
+
+        if(empty($template_file)){
+            $template_file = DRUPAL_ROOT . "/" . $hook_infos["theme path"] . "/" . $hook_infos["path"] . ".twig";
+        }
+
+
+
+
+
+        if(!file_exists($template_file)){
+            throw new \Tembo\Core\Exception\TemboException("Template $template_file doesn't exist");
+        }
+
+        include $template_file;
+
+        // End buffering and return its contents
+        $html =  ob_get_clean();
+
+        //Return and Render with TWIG
+        return tembo_render_twig($html, $var);
+    }
+
+}
+
+/**
+ *  Implements hook_install().
+ */
+function tembo_twig_install()
+{
+
+    // Make Sure Tembo Twig is bootstraped Early !!
+    db_update('system')
+        ->fields(array('weight' => -10))
+        ->condition('name', 'tembo_twig', '=')
+        ->execute();
+}
+
+
+/**
+ * Renders A TWIG String
+ * @param $string
+ * @param $data
+ * @return mixed
+ */
+function tembo_render_twig($string, $data){
+    $app = tembo_app();
+    $twig = $app["tembo.twig"];
+    return $twig->render($string, $data);
+}

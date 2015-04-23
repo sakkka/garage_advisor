@@ -1,0 +1,43 @@
+<?php
+
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Route;
+
+
+/**
+ * @param $var
+ */
+function tembo_routing_preprocess_page(&$vars){
+    tembo_router()->init($vars);
+}
+
+
+/**
+ * @return \Tembo\Routing\Router
+ */
+function tembo_router(){
+
+    $app = tembo_app();
+
+    /**
+     * @var $router \Tembo\Routing\Router
+     */
+    $router = $app["tembo.router"];
+    return $router;
+}
+
+/**
+ * @param \Tembo\Core\App $application
+ */
+function tembo_routing_app_registered(\Tembo\Core\App $app) {
+
+    $app["tembo.router"] = function(){
+        return new \Tembo\Routing\Router();
+    };
+
+
+    return;
+}
+
+
+

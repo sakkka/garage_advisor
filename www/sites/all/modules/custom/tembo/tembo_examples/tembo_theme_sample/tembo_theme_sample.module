@@ -1,0 +1,39 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: kalutheo
+ * Date: 08/07/2014
+ * Time: 10:22
+ */
+
+
+
+
+use Tembo\Theme\Theme;
+
+/**
+ * @param $variables
+ */
+function tembo_theme_sample_preprocess_page(&$variables){
+    if(drupal_is_front_page()){
+        $output =  tembo_render("tembo_sample", array("hello" => "Bonjour :-)"));
+        $variables["page"]["content"] = $output;
+    }
+    return;
+}
+
+/**
+ * @param $existing
+ * @param $type
+ * @param $theme
+ * @param $path
+ * @return array
+ */
+function tembo_theme_sample_theme($existing, $type, $theme, $path) {
+
+    $hooks = array();
+    Theme::register("tembo_sample", "templates/twig/tembo-sample", $hooks, '\Tembo\Sample\Theme\Composers\TemboSampleComposer');
+    return $hooks;
+}
+
+

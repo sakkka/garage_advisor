@@ -1,0 +1,13 @@
+{
+    "name": "tembo/blocks",
+    "version": "1.0.0",
+    "require" : {
+    },
+    "autoload": {
+        "psr-0": {
+            "Tembo\\Blocks": "src/"
+        }
+    },
+
+    "minimum-stability": "dev"
+}
